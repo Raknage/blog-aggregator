@@ -1,5 +1,9 @@
+import { setUser, readConfig } from "src/config";
+
 function main() {
-    console.log("Hello, world!");
+    let user = "Toni"
+    setUser(user)
+    console.log(readConfig())
 }
 
 main();
