@@ -5,7 +5,13 @@
   "type": "module",
   "scripts": {
     "start": "tsx ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db-start": "sudo service postgresql start",
+    "db-stop": "sudo service postgresql stop",
+    "db-status": "sudo service postgresql status",
+    "psql": "sudo -u postgres psql",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +19,12 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^24.3.1",
+    "drizzle-kit": "^0.31.5",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.6",
+    "postgres": "^3.4.7"
   }
 }
