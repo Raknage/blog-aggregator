@@ -4,6 +4,7 @@ import {
   handleReset,
   handlerLogin,
   handlerRegister,
+  handlerUsers,
   registerCommand,
   runCommand,
 } from "./commandHandler";
@@ -21,6 +22,7 @@ async function main() {
   registerCommand(registry, "login", handlerLogin);
   registerCommand(registry, "register", handlerRegister);
   registerCommand(registry, "reset", handleReset);
+  registerCommand(registry, "users", handlerUsers);
   await runCommand(registry, cmdName, ...args);
 
   process.exit(0);
