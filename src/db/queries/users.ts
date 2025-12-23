@@ -12,3 +12,9 @@ export async function getUser(name: string) {
 
   return result;
 }
+
+export async function resetUsers() {
+  const result = await db.delete(users).returning();
+
+  return result;
+}
