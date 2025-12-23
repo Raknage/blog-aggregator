@@ -3,10 +3,9 @@ import { readConfig } from "./src/config.ts";
 
 export default defineConfig({
   dialect: "postgresql",
-  schema: "src/schema.ts",
+  schema: "src/db/schema.ts",
   out: "src/db",
   dbCredentials: {
     url: readConfig().dbUrl,
-    ssl: { rejectUnauthorized: false },
   },
 });

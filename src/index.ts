@@ -1,13 +1,9 @@
 import "process";
-import {
-  CommandsRegistry,
-  handleReset,
-  handlerLogin,
-  handlerRegister,
-  handlerUsers,
-  registerCommand,
-  runCommand,
-} from "./commandHandler";
+import { CommandsRegistry } from "./commands/commands";
+import { handlerLogin, handlerRegister, handlerUsers } from "./commands/users";
+import { runCommand } from "./commands/commands";
+import { handleReset } from "./commands/reset";
+import { registerCommand } from "./commands/commands";
 
 async function main() {
   const cmdArgs = process.argv.slice(2);
