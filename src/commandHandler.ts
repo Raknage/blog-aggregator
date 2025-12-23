@@ -1,21 +1,48 @@
 import { setUser } from "./config";
+import { createUser, getUser } from "./db/queries/users";
 
-export type CommandHandler = (cmdName: string, ...args: string[]) => void;
+export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 export type CommandsRegistry = Record<string, CommandHandler>;
 
-export function handlerLogin(cmdName: string, ...args: string[]) {
+export async function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length === 0) {
     throw new Error("Argument(s) missing");
   }
 
+  if (!(await getUser(args[0]))) {
+    throw new Error(`User "${args[0]}" doesn't exist`);
+  }
   setUser(args[0]);
   console.log(`User set to: "${args[0]}"`);
 }
 
-export function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler) {
+export async function handlerRegister(cmdName: string, ...args: string[]) {
+  if (args.length === 0) {
+    throw new Error("Argument(s) missing");
+  }
+
+  try {
+    const user = await createUser(args[0]);
+    setUser(args[0]);
+    console.log(`User "${args[0]}" created\n${JSON.stringify(user, null, 2)}`);
+  } catch (err) {
+    if (isDuplicateKeyError(err)) {
+      console.log("User already exists");
+    } else {
+      console.log(err);
+    }
+    process.exit(1);
+  }
+}
+
+export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler) {
   registry[cmdName] = handler;
 }
 
-export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]) {
-  registry[cmdName](cmdName, ...args);
+export async function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]) {
+  await registry[cmdName](cmdName, ...args);
+}
+
+function isDuplicateKeyError(err: any) {
+  return err && typeof err === "object" && typeof err.cause === "object" && err.cause.code === "23505";
 }

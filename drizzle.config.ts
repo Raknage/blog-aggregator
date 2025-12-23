@@ -7,5 +7,6 @@ export default defineConfig({
   out: "src/db",
   dbCredentials: {
     url: readConfig().dbUrl,
+    ssl: { rejectUnauthorized: false },
   },
 });
