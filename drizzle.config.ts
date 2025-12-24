@@ -4,7 +4,7 @@ import { readConfig } from "./src/config.ts";
 export default defineConfig({
   dialect: "postgresql",
   schema: "src/db/schema.ts",
-  out: "src/db",
+  out: "src/db/migrations",
   dbCredentials: {
     url: readConfig().dbUrl,
   },
