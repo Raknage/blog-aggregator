@@ -1,7 +1,29 @@
 import { readConfig } from "src/config";
+import { createFeedFollow, getFeed, getFeedFollowsForUser } from "src/db/queries/feedFollows";
 import { getFeeds, insertFeed } from "src/db/queries/feeds";
 import { getUser } from "src/db/queries/users";
 import { Feed, User } from "src/db/schema";
+
+export async function handleFollow(_: string, ...args: string[]) {
+  if (args.length < 1) {
+    throw new Error("Argument(s) missing");
+  }
+  const userName = readConfig().currentUserName;
+  const user = await getUser(userName);
+  const feed = await getFeed(args[0]);
+  const follow = await createFeedFollow(user.id, feed.id);
+  console.log(`New feed follow:`);
+  printFeed(feed, user);
+}
+
+export async function handleGetFollows(_: string, ...args: string[]) {
+  const user = await getUser(readConfig().currentUserName);
+  const feeds = await getFeedFollowsForUser(user.id);
+  console.log(`${user.name} feeds:`);
+  for (const feed of feeds) {
+    console.log(`${feed.feeds.name}`);
+  }
+}
 
 export async function handleAddFeed(_: string, ...args: string[]) {
   if (args.length < 2) {
@@ -10,6 +32,7 @@ export async function handleAddFeed(_: string, ...args: string[]) {
 
   const user = await getUser(readConfig().currentUserName);
   const feed = await insertFeed(args[0], args[1], user.id);
+  await createFeedFollow(user.id, feed.id);
   console.log(`Feed created:`);
   printFeed(feed, user);
 }
