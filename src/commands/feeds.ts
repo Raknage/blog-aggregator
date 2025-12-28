@@ -1,8 +1,18 @@
 import { readConfig } from "src/config";
-import { createFeedFollow, getFeed, getFeedFollowsForUser } from "src/db/queries/feedFollows";
+import { createFeedFollow, deleteFeedFollow, getFeed, getFeedFollowsForUser } from "src/db/queries/feedFollows";
 import { getFeeds, insertFeed } from "src/db/queries/feeds";
 import { getUser } from "src/db/queries/users";
 import { Feed, User } from "src/db/schema";
+
+export async function handleUnFollow(_: string, user: User, ...args: string[]) {
+  if (args.length < 1) {
+    throw new Error("Argument(s) missing");
+  }
+  const feed = await getFeed(args[0]);
+  const follow = await deleteFeedFollow(user.id, feed.id);
+  console.log(`Feed unfollowed:`);
+  printFeed(feed, user);
+}
 
 export async function handleFollow(_: string, user: User, ...args: string[]) {
   if (args.length < 1) {
