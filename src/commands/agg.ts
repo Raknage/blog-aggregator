@@ -1,4 +1,5 @@
 import { getNextFeedToFetch, markFeedFetched } from "src/db/queries/feeds";
+import { createPost } from "src/db/queries/posts";
 import { fetchFeed } from "src/rss";
 
 export async function handleAggregation(_: string, timeBetweenReqs: string, ...args: string[]) {
@@ -32,7 +33,20 @@ export async function scrapeFeeds() {
   const feed = await markFeedFetched(nextFeed.id);
   const fetchedFeed = await fetchFeed(feed.url);
   console.log(`Fetching feed ${fetchedFeed.channel.title}:`);
+
   for (const item of fetchedFeed.channel.item) {
+    const publishedAt = new Date(item.pubDate);
+    if (!publishedAt.getTime()) {
+      console.log(`  - ${item.title}: Invalid date ${item.pubDate}`);
+      continue;
+    }
+    await createPost({
+      title: item.title,
+      url: item.link,
+      description: item.description,
+      publishedAt: publishedAt,
+      feed_id: feed.id,
+    });
     console.log(`  - ${item.title}`);
   }
 }
