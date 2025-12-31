@@ -1,4 +1,4 @@
-# Blog Aggregator (Gator)
+# Blog Aggregator | gator
 
 A Command Line Interface (CLI) tool for aggregating and browsing RSS feeds. Based on [Boot.dev course](https://www.boot.dev/courses/build-blog-aggregator-typescript).
 
